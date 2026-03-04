@@ -37,8 +37,14 @@ const Home = () => {
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await generateQuiz(topic, numQuestions).then(() => setIsLoading(false));
-    router.push("/quiz");
+    try {
+      await generateQuiz(topic, numQuestions);
+      router.push("/quiz");
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

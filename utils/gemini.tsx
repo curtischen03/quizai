@@ -5,6 +5,8 @@ const apiKey = process.env.GOOGLE_API_KEY;
 if (!apiKey) {
   throw new Error("Missing GOOGLE_API_KEY in environment variables");
 }
+let lastRequestTime = 0;
+const COOLDOWN_MS = 60000 * 5; // 1 minute in milliseconds x 5
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -18,6 +20,13 @@ export async function generateQuizQuestions(
   numQuestions: number,
 ): Promise<QuizQuestion[]> {
   try {
+    const now = Date.now();
+    const timeSinceLast = now - lastRequestTime;
+    if (timeSinceLast < COOLDOWN_MS) {
+      const secondsLeft = Math.ceil((COOLDOWN_MS - timeSinceLast) / 1000);
+      throw new Error(`Rate limit: Please wait ${secondsLeft} seconds.`);
+    }
+    lastRequestTime = now;
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `Generate ${numQuestions} multiple-choice quiz questions about ${topic}. 
@@ -79,38 +88,3 @@ export async function generateQuizQuestions(
     throw error;
   }
 }
-
-async function analyze_text(
-  context: string,
-  task: string,
-  output_constraint: string,
-): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
-    tools: [{ googleSearch: {} }] as any,
-  });
-
-  const response = await model.generateContent({
-    contents: [
-      {
-        role: "user",
-        parts: [
-          {
-            text: `Context:${context}, Task:${task}, Output Constraint:${output_constraint}`,
-          },
-        ],
-      },
-    ],
-  });
-  const text = response.response.text();
-  return text;
-}
-
-// const response = await analyze_text(
-//   "You are a helpful assistant",
-//   "What is the capital of France?",
-//   "The capital of France is Paris"
-// );
-
-// console.log(response);
-export default analyze_text;
