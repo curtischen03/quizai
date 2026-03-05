@@ -27,6 +27,7 @@ Create a `.env` file in the root directory with:
 
 ```env
 GOOGLE_API_KEY=your_google_api_key
+IP_SALT=your_ip_salt
 ```
 
 Make sure your key has access to the Gemini API.
