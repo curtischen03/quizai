@@ -44,7 +44,7 @@ export async function generateQuizQuestions(
     if (rateLimitResult) {
       return rateLimitResult;
     }
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     const prompt = `Generate ${numQuestions} multiple-choice quiz questions about ${topic}. 
     For each question, provide:
     1. The question text
