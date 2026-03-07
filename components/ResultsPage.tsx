@@ -16,9 +16,9 @@ const ResultsPage = () => {
   }
 
   const percentage = Math.round((score / total) * 100);
+  const shareUrl = `${window.location.origin}/quiz/${quizId}`;
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/quiz/${quizId}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -46,12 +46,26 @@ const ResultsPage = () => {
                 Start New Quiz
               </button>
               {quizId && (
-                <button
-                  className={`btn ${copied ? "btn-success" : "btn-outline-secondary"}`}
-                  onClick={handleShare}
-                >
-                  {copied ? "Copied Link" : "Share Quiz"}
-                </button>
+                <div className="container mt-4">
+                  <div
+                    className="input-group mb-3 mx-auto"
+                    style={{ maxWidth: "400px" }}
+                  >
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={shareUrl}
+                      readOnly
+                    />
+                    <button
+                      className={`btn ${copied ? "btn-success" : "btn-outline-primary"}`}
+                      type="button"
+                      onClick={handleShare}
+                    >
+                      {copied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
