@@ -9,8 +9,25 @@ interface Quiz {
 }
 export default function displayQuizzes() {
   const [quizData, setQuizData] = useState<Quiz[]>([]);
+  const [displayQuizData, setDisplayQuizData] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const modifiedQuery = query.toLowerCase().trim();
+    if (modifiedQuery == "") {
+      setDisplayQuizData(quizData);
+      return;
+    }
+    setDisplayQuizData(
+      quizData.filter(
+        (quiz) =>
+          quiz.topic.toLowerCase().includes(modifiedQuery) ||
+          quiz.quizid.includes(modifiedQuery),
+      ),
+    );
+  }, [query]);
   useEffect(() => {
     const fetchQuizzes = async () => {
       const { data, error } = await supabase
@@ -22,6 +39,7 @@ export default function displayQuizzes() {
       }
       if (data) {
         setQuizData(data);
+        setDisplayQuizData(data);
         setLoading(false);
       }
     };
@@ -51,6 +69,19 @@ export default function displayQuizzes() {
     );
   return (
     <div className="container px-4 pt-5">
+      <div
+        className="input-group mb-3 mx-auto pb-4"
+        style={{ maxWidth: "400px" }}
+      >
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search quizzes..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+
       <table className="table">
         <thead>
           <tr>
@@ -60,7 +91,7 @@ export default function displayQuizzes() {
           </tr>
         </thead>
         <tbody>
-          {quizData.map((quiz) => (
+          {displayQuizData.map((quiz) => (
             <tr key={quiz.quizid}>
               <th scope="row">{quiz.quizid.slice(0, 8)}...</th>
               <td>{quiz.topic}</td>
