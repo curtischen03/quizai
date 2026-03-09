@@ -11,7 +11,7 @@ export default function Navbar() {
         {/* Simple Horizontal List */}
         <ul className="nav">
           <li className="nav-item">
-            <Link href="/" className="nav-link text-white">
+            <Link href="/create" className="nav-link text-white">
               Create Quiz
             </Link>
           </li>
