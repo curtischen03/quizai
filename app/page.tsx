@@ -34,7 +34,7 @@ const MobileFriendlyHero: React.FC = () => {
       </div>
 
       <div
-        className="w-100 d-flex align-items-center justify-content-center"
+        className="w-100 d-flex align-items-center justify-content-center mb-5"
         style={{
           minHeight: "200px",
           maxHeight: "50vh",
